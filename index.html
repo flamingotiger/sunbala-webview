@@ -1,10 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1, shrink-to-fit=no"
   />
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>주소검색</title>
   </head>
   <style>
@@ -25,6 +28,7 @@
     <div id="full-size"></div>
   </body>
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=953a9e73d310a7198314ec6c4e7f491c&libraries=services"></script>
   <script type="text/javascript">
     // 우편번호 찾기 화면을 넣을 element
     var element_layer = document.getElementById("full-size");
@@ -38,8 +42,32 @@
 
       new daum.Postcode({
         oncomplete: function (data) {
+          console.log(data);
           // 우편번호와 주소 정보를 해당 필드에 넣는다.
-          callbackMessage(JSON.stringify(data));
+
+          Promise.resolve(data)
+            .then((o) => {
+              const { address } = data;
+              return new Promise((resolve, reject) => {
+                const geocoder = new daum.maps.services.Geocoder();
+
+                geocoder.addressSearch(address, (result, status) => {
+                  if (status === daum.maps.services.Status.OK) {
+                    const { x, y } = result[0];
+
+                    resolve({ lat: y, lon: x });
+                  } else {
+                    reject();
+                  }
+                });
+              });
+            })
+            .then((result) => {
+              // 위, 경도 결과 값
+              // lat: "37.4777556513689"
+              // lon: "127.049401327634"
+              callbackMessage(JSON.stringify({ ...data, ...result }));
+            });
         },
         width: "100%",
         height: "100%",
