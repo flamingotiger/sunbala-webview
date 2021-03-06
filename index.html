@@ -21,7 +21,8 @@
     #full-size {
       height: 100%;
       width: 100%;
-      overflow: hidden; /* or overflow:auto; if you want scrollbars */
+      overflow: hidden;
+      /* or overflow:auto; if you want scrollbars */
     }
   </style>
   <body>
@@ -33,66 +34,80 @@
     // 우편번호 찾기 화면을 넣을 element
     var element_layer = document.getElementById("full-size");
 
-    daum.postcode.load(function () {
-      new daum.Postcode({
-        oncomplete: function (data) {
-          const { address } = data;
-          const geocoder = new daum.maps.services.Geocoder();
-          geocoder.addressSearch(address, (result, status) => {
-            if (status === daum.maps.services.Status.OK) {
-              const { x, y } = result[0];
-              if (
-                window.getAddressWebToApp &&
-                window.getAddressWebToApp.postMessage
-              ) {
-                console.log("😎⭐️ssdsd", { address: { ...data, lat: y, lon: x } });
-                getAddressWebToApp.postMessage(
-                  JSON.stringify({ address: { ...data, lat: y, lon: x } })
-                );
-              }
+    // daum.postcode.load(function () {
+    var themeObj = {
+      //bgColor: "", //바탕 배경색
+      searchBgColor: "#FFC700", //검색창 배경색
+      //contentBgColor: "", //본문 배경색(검색결과,결과없음,첫화면,검색서제스트)
+      //pageBgColor: "", //페이지 배경색
+      //textColor: "", //기본 글자색
+      queryTextColor: "#FFFFFF", //검색창 글자색
+      postcodeTextColor: "#FFB800", //우편번호 글자색
+      //emphTextColor: "", //강조 글자색
+      //outlineColor: "", //테두리
+    };
+    new daum.Postcode({
+      theme: themeObj,
+      oncomplete: function (data) {
+        const { address } = data;
+        const geocoder = new daum.maps.services.Geocoder();
+        geocoder.addressSearch(address, (result, status) => {
+          if (status === daum.maps.services.Status.OK) {
+            const { x, y } = result[0];
+            if (
+              window.getAddressWebToApp &&
+              window.getAddressWebToApp.postMessage
+            ) {
+              console.log("😎⭐️ssdsd", {
+                address: { ...data, lat: y, lon: x },
+              });
+              getAddressWebToApp.postMessage(
+                JSON.stringify({ address: { ...data, lat: y, lon: x } })
+              );
             }
-          });
-          //   Promise.resolve(data)
-          //     .then((o) => {
-          //       const { address } = data;
-          //       return new Promise((resolve, reject) => {
-          //         const geocoder = new daum.maps.services.Geocoder();
+          }
+        });
+        //   Promise.resolve(data)
+        //     .then((o) => {
+        //       const { address } = data;
+        //       return new Promise((resolve, reject) => {
+        //         const geocoder = new daum.maps.services.Geocoder();
 
-          //         geocoder.addressSearch(address, (result, status) => {
-          //           if (status === daum.maps.services.Status.OK) {
-          //             const { x, y } = result[0];
+        //         geocoder.addressSearch(address, (result, status) => {
+        //           if (status === daum.maps.services.Status.OK) {
+        //             const { x, y } = result[0];
 
-          //             resolve({ lat: y, lon: x });
-          //           } else {
-          //             reject();
-          //           }
-          //         });
-          //       });
-          //     })
-          // .then((result) => {
-          //   // 위, 경도 결과 값
-          //   // lat: "37.4777556513689"
-          //   // lon: "127.049401327634"
-          //   if (
-          //     window.getAddressWebToApp &&
-          //     window.getAddressWebToApp.postMessage
-          //   ) {
-          //     getAddressWebToApp.postMessage(
-          //       JSON.stringify({ address: { ...data, ...result } })
-          //     );
-          //   }
-          // });
-        },
-        width: "100%",
-        height: "100%",
-        maxSuggestItems: 5,
-        alwaysShowEngAddr: false,
-        hideMapBtn: true,
-        hideEngBtn: false,
-      }).embed(element_layer);
+        //             resolve({ lat: y, lon: x });
+        //           } else {
+        //             reject();
+        //           }
+        //         });
+        //       });
+        //     })
+        // .then((result) => {
+        //   // 위, 경도 결과 값
+        //   // lat: "37.4777556513689"
+        //   // lon: "127.049401327634"
+        //   if (
+        //     window.getAddressWebToApp &&
+        //     window.getAddressWebToApp.postMessage
+        //   ) {
+        //     getAddressWebToApp.postMessage(
+        //       JSON.stringify({ address: { ...data, ...result } })
+        //     );
+        //   }
+        // });
+      },
+      width: "100%",
+      height: "100%",
+      maxSuggestItems: 5,
+      alwaysShowEngAddr: false,
+      hideMapBtn: true,
+      hideEngBtn: false,
+    }).embed(element_layer);
 
-      // iframe을 넣은 element를 보이게 한다.
-      element_layer.style.display = "block";
-    });
+    // iframe을 넣은 element를 보이게 한다.
+    element_layer.style.display = "block";
+    // });
   </script>
 </html>
