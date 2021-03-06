@@ -58,9 +58,6 @@
               window.getAddressWebToApp &&
               window.getAddressWebToApp.postMessage
             ) {
-              console.log("😎⭐️ssdsd");
-              console.log(x);
-              console.log(y);
               getAddressWebToApp.postMessage(
                 JSON.stringify({ address: { ...data, lat: y, lon: x } })
               );
