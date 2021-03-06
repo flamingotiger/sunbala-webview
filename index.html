@@ -65,7 +65,7 @@
                 window.getAddressWebToApp.postMessage
               ) {
                 getAddressWebToApp.callbackMessage(
-                  JSON.stringify({ ...data, ...result })
+                  JSON.stringify({ address: { ...data, ...result } })
                 );
               }
             });
