@@ -34,12 +34,6 @@
     var element_layer = document.getElementById("full-size");
 
     daum.postcode.load(function () {
-      function callbackMessage(message) {
-        try {
-          onComplete.postMessage(message);
-        } catch (err) {}
-      }
-
       new daum.Postcode({
         oncomplete: function (data) {
           console.log(data);
@@ -66,7 +60,14 @@
               // 위, 경도 결과 값
               // lat: "37.4777556513689"
               // lon: "127.049401327634"
-              callbackMessage(JSON.stringify({ ...data, ...result }));
+              if (
+                window.getAddressWebToApp &&
+                window.getAddressWebToApp.postMessage
+              ) {
+                getAddressWebToApp.callbackMessage(
+                  JSON.stringify({ ...data, ...result })
+                );
+              }
             });
         },
         width: "100%",
