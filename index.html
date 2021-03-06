@@ -36,39 +36,52 @@
     daum.postcode.load(function () {
       new daum.Postcode({
         oncomplete: function (data) {
-          console.log(data);
-          // 우편번호와 주소 정보를 해당 필드에 넣는다.
-
-          Promise.resolve(data)
-            .then((o) => {
-              const { address } = data;
-              return new Promise((resolve, reject) => {
-                const geocoder = new daum.maps.services.Geocoder();
-
-                geocoder.addressSearch(address, (result, status) => {
-                  if (status === daum.maps.services.Status.OK) {
-                    const { x, y } = result[0];
-
-                    resolve({ lat: y, lon: x });
-                  } else {
-                    reject();
-                  }
-                });
-              });
-            })
-            .then((result) => {
-              // 위, 경도 결과 값
-              // lat: "37.4777556513689"
-              // lon: "127.049401327634"
+          const { address } = data;
+          const geocoder = new daum.maps.services.Geocoder();
+          geocoder.addressSearch(address, (result, status) => {
+            if (status === daum.maps.services.Status.OK) {
+              const { x, y } = result[0];
               if (
                 window.getAddressWebToApp &&
                 window.getAddressWebToApp.postMessage
               ) {
+                console.log("😎⭐️ssdsd", { address: { ...data, lat: y, lon: x } });
                 getAddressWebToApp.postMessage(
-                  JSON.stringify({ address: { ...data, ...result } })
+                  JSON.stringify({ address: { ...data, lat: y, lon: x } })
                 );
               }
-            });
+            }
+          });
+          //   Promise.resolve(data)
+          //     .then((o) => {
+          //       const { address } = data;
+          //       return new Promise((resolve, reject) => {
+          //         const geocoder = new daum.maps.services.Geocoder();
+
+          //         geocoder.addressSearch(address, (result, status) => {
+          //           if (status === daum.maps.services.Status.OK) {
+          //             const { x, y } = result[0];
+
+          //             resolve({ lat: y, lon: x });
+          //           } else {
+          //             reject();
+          //           }
+          //         });
+          //       });
+          //     })
+          // .then((result) => {
+          //   // 위, 경도 결과 값
+          //   // lat: "37.4777556513689"
+          //   // lon: "127.049401327634"
+          //   if (
+          //     window.getAddressWebToApp &&
+          //     window.getAddressWebToApp.postMessage
+          //   ) {
+          //     getAddressWebToApp.postMessage(
+          //       JSON.stringify({ address: { ...data, ...result } })
+          //     );
+          //   }
+          // });
         },
         width: "100%",
         height: "100%",
