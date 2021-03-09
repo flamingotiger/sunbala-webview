@@ -29,7 +29,6 @@
     <div id="full-size"></div>
   </body>
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=953a9e73d310a7198314ec6c4e7f491c&libraries=services"></script>
   <script type="text/javascript">
     // 우편번호 찾기 화면을 넣을 element
     var element_layer = document.getElementById("full-size");
@@ -49,21 +48,12 @@
     new daum.Postcode({
       theme: themeObj,
       oncomplete: function (data) {
-        const { address } = data;
-        const geocoder = new daum.maps.services.Geocoder();
-        geocoder.addressSearch(address, (result, status) => {
-          if (status === daum.maps.services.Status.OK) {
-            const { x, y } = result[0];
-            if (
-              window.getAddressWebToApp &&
-              window.getAddressWebToApp.postMessage
-            ) {
-              getAddressWebToApp.postMessage(
-                JSON.stringify({ address: { ...data, lat: y, lon: x } })
-              );
-            }
-          }
-        });
+        if (
+          window.getAddressWebToApp &&
+          window.getAddressWebToApp.postMessage
+        ) {
+          getAddressWebToApp.postMessage(JSON.stringify(data));
+        }
       },
       width: "100%",
       height: "100%",
